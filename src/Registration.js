@@ -9,12 +9,14 @@ const Register = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  // Handle form submission for user registration
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     try {
+      // Call the register function with the form data
       await register(email, password, name);
-      navigate('/login');
+      navigate('/login'); // Redirect to the login page on success
     } catch (error) {
       setError('Registration failed. Please try again.');
       console.error('Registration error:', error);

@@ -14,15 +14,17 @@ import './App.css';
 
 function App() {
   return (
+    // Provide user context to the entire application
     <UserProvider>
       <Router>
         <Header />
         <Routes>
+          {/* Public routes */}
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/auth/discord/callback" element={<DiscordCallback />} />
-          
+
           {/* Protected routes */}
           <Route element={<ProtectedRoute />}>
             <Route path="/home" element={<HomePage />} />

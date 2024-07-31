@@ -3,10 +3,12 @@ import { login as apiLogin } from './api';
 
 const UserContext = createContext();
 
+// Provider component to manage user authentication state and context
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const logoutTimerRef = useRef(null);
 
+  // Function to log out the user
   const logout = useCallback((reason = 'manual') => {
     setUser(null);
     localStorage.removeItem('token');
@@ -16,27 +18,31 @@ const UserProvider = ({ children }) => {
     localStorage.setItem('logoutReason', reason);
   }, []);
 
+  // Function to reset the inactivity logout timer
   const resetLogoutTimer = useCallback(() => {
     if (logoutTimerRef.current) {
       clearTimeout(logoutTimerRef.current);
     }
     logoutTimerRef.current = setTimeout(() => {
       logout('inactivity');
-    }, 60000); 
+    }, 300000); // Log out after 5 minutes of inactivity
   }, [logout]);
 
+  // Function to handle user activity and reset the timer
   const handleActivity = useCallback(() => {
     if (user) {
       resetLogoutTimer();
     }
   }, [user, resetLogoutTimer]);
 
+  // Effect to monitor user activity and reset the timer
   useEffect(() => {
     if (user) {
       resetLogoutTimer();
-      
+
+      // List of events to detect user activity
       const events = ['mousemove', 'mousedown', 'keypress', 'scroll', 'touchstart'];
-      
+
       events.forEach(event => {
         window.addEventListener(event, handleActivity);
       });
@@ -52,6 +58,7 @@ const UserProvider = ({ children }) => {
     }
   }, [user, handleActivity, resetLogoutTimer]);
 
+  // Function to log in the user and set the user state
   const login = async (email, password) => {
     try {
       const data = await apiLogin(email, password);

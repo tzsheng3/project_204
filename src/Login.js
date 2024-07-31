@@ -26,7 +26,6 @@ const Login = () => {
     try {
       const user = await login(email, password);
       setUser(user);
-      
       navigate('/home');
     } catch (error) {
       setError('Login failed. Please check your credentials.');
